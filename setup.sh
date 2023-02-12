@@ -32,6 +32,9 @@ install_fonts() {
 install_themes() {
 	if [[ -d "$ROFI_DIR" ]]; then
 		echo -e ${BPurple}"[*] Creating a backup of your rofi configs..." ${Color_Off}
+		if [[ -d "${ROFI_DIR}.${USER}" ]]; then
+		rm -rf "${ROFI_DIR}.${USER}"
+		fi
 		mv "$ROFI_DIR" "${ROFI_DIR}.${USER}"
 	fi
 	echo -e ${BBlue}"[*] Installing rofi configs..." ${Color_Off}
@@ -46,10 +49,39 @@ install_themes() {
 	fi
 }
 
+# Add Path
+install_profile() {
+	if [[ -f "$HOME/.profile" ]]; then
+		echo -e ${BPurple}"[*] Creating a backup of your profile..." ${Color_Off}
+		cp "$HOME/.profile" "$HOME/.profile.${USER}"
+	fi
+
+	echo -e ${BBlue}"[*] Installing profile configs..." ${Color_Off}
+	sed -i '/# rofi/{N;N;d;}' "$HOME/.profile"
+	# sed -i '/\.config\/rofi\/scripts/d' "$HOME/.profile"
+	cat <<EOF >>"$HOME/.profile"
+# rofi
+export PATH="$HOME/.config/rofi/scripts:$HOME/.config/rofi/applets/bin:$PATH"
+
+EOF
+
+	cat "$HOME/.profile"
+	source "$HOME/.profile"
+
+	if [[ -f "$HOME/.profile" ]]; then
+		echo -e ${BGreen}"[*] Successfully Installed.\n" ${Color_Off}
+		exit 0
+	else
+		echo -e ${BRed}"[!] Failed to install.\n" ${Color_Off}
+		exit 1
+	fi
+}
+
 # Main
 main() {
-	install_fonts
+	# install_fonts
 	install_themes
+	# install_profile
 }
 
 main
