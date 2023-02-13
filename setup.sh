@@ -42,7 +42,6 @@ install_themes() {
 
 	if [[ -f "$ROFI_DIR/config.rasi" ]]; then
 		echo -e ${BGreen}"[*] Successfully Installed.\n" ${Color_Off}
-		exit 0
 	else
 		echo -e ${BRed}"[!] Failed to install.\n" ${Color_Off}
 		exit 1
@@ -61,7 +60,7 @@ install_profile() {
 	# sed -i '/\.config\/rofi\/scripts/d' "$HOME/.profile"
 	cat <<EOF >>"$HOME/.profile"
 # rofi
-export PATH="$HOME/.config/rofi/scripts:$HOME/.config/rofi/applets/bin:$PATH"
+export PATH="$HOME/.config/rofi/scripts:$HOME/.config/rofi/applets/bin:\$PATH"
 
 EOF
 
@@ -70,7 +69,6 @@ EOF
 
 	if [[ -f "$HOME/.profile" ]]; then
 		echo -e ${BGreen}"[*] Successfully Installed.\n" ${Color_Off}
-		exit 0
 	else
 		echo -e ${BRed}"[!] Failed to install.\n" ${Color_Off}
 		exit 1
@@ -79,9 +77,9 @@ EOF
 
 # Main
 main() {
-	# install_fonts
+	install_fonts
 	install_themes
-	# install_profile
+	install_profile
 }
 
 main
